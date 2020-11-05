@@ -4,23 +4,22 @@ const { DateTime } = require('luxon');
 
 var UserSchema = new Schema(
   {
-    first_name: {type: String, required: true, maxlength: 100},
-    last_name: {type: String, required: true, maxlength: 100},
+    firstName: {type: String, required: true, maxlength: 100},
+    lastName: {type: String, required: true, maxlength: 100},
     email: {type: String, required: true},
+    username: {type: String},
+    password: {type: String, required: true},
     joined: {type: Date, required: true},
     status: {type: String, enum: ['Member', 'Elite'], required: true},
     admin: {type: Boolean}
   }
 );
 
-//Virtual for User's username: user's email minus address
+//Virtual for User's joined date
 UserSchema
-.virtual('username')
+.virtual('joined_formatted')
 .get(function () {
-  let name = this.email;
-  let start = name.indexOf('@');
-  let username = name.slice(start, name.length);
-  return username;
+  return DateTime.fromJSDate(this.joined).toLocaleString(DateTime.DATE_SHORT);
 });
 
 //Export model

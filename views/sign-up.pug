@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  div.field.columns.is-centered
+    div.column.is-three-quarters
+      h1.title Message Board Sign Up
+      br
+      form(action='', method='POST')
+        label.label(for='firstName') First Name
+        div.control
+          input.input(type='text' name='firstName' placeholder='First Name' required=true)
+        label.label(for='lastName') Last Name
+        div.control
+          input.input(type='text' name='lastName' placeholder='Last Name' required=true)
+        label.label(for='email') Email
+        div.control
+          input.input(type='email' name='email' placeholder='example@email.com' required=true)
+        p.help This will be your username.  If you would like to use something else as your username you can enter one below
+        label.label(for='username') Username
+        div.control
+          input.input(type='text' name='username' placeholder='Leave blank if you would like to use your local-part')
+        p.help Your local-part is everything before the @ symbol in your email address.
+        label.label(for='password') Password
+        div.control
+          input.input(type='password' name='password' required=true)
+        label.label(for='passwordConfirm') Confirm Password
+        div.control
+          input.input(type='password' name='passwordConfirm' required='true')
+        label.label(for='memberPassword') Elite Member Password
+        div.control
+          input.input(type='text' name='memberPassword' placeholder='Password for Elite Member Status')
+        p.help You can enter this later if you don't know it now.
+        label.label(for='admin') Admin?
+        div.control
+          input.input(type='password' name='admin' placeholder='Leave blank for regular user')
+        div.control.mt-5
+          button.button.is-link Submit

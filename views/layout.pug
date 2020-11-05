@@ -7,5 +7,16 @@ html(lang='en')
     link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css')
     link(rel='stylesheet', href='../../../stylesheets/style.css')
   body
-  
+
+    div.tabs
+      ul
+        li
+          a(href='/') Home
+        li
+          a(href='/message-board') Message Board
+      if (!user)
+        li
+          a(href='/sign-up') Sign Up
+        li
+          a(href='/log-in') Log In
     block content
