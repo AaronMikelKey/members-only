@@ -13,34 +13,34 @@ require('dotenv').config({ path: './main.env' });
 /* GET home page. */
 router.get('/', function (req, res, next) {
   async.parallel({
-    countUsers: function(callback) {
+    countUsers: function (callback) {
       User.find({}, 'status admin')
-      .exec(callback)
+        .exec(callback)
     },
-    countMessages: function(callback) {
+    countMessages: function (callback) {
       Message.find({})
-      .exec(callback)
-    }, 
-  }, function(err, results) {
+        .exec(callback)
+    },
+  }, function (err, results) {
     let users = results.countUsers.length;
-    let elite=0;
-    let admin=0;
-    let messages= results.countMessages.length;
-    for (let i=0;i<results.countUsers.length;i++) {
+    let elite = 0;
+    let admin = 0;
+    let messages = results.countMessages.length;
+    for (let i = 0; i < results.countUsers.length; i++) {
       if (results.countUsers[i].status === 'Elite') {
-        elite +=1;
+        elite += 1;
       }
       if (results.countUsers[i].admin === true) {
-        admin +=1;
+        admin += 1;
       }
     }
-      res.render('index', { users: users, elite: elite, admin: admin, messages: messages })
+    res.render('index', { users: users, elite: elite, admin: admin, messages: messages })
   })
 });
 
 //GET sign up form
 router.get('/sign-up', function (req, res, next) {
-  
+
   res.render('sign-up');
 });
 //POST sign up form
@@ -121,7 +121,7 @@ router.get('/log-in', function (req, res, next) {
 });
 
 //POST login form
-router.post('/log-in', 
+router.post('/log-in',
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/log-in",
@@ -136,11 +136,55 @@ router.get('/log-out', (req, res) => {
 
 //GET message board
 router.get('/message-board', function (req, res, next) {
-  Message.find({}, (err, messages) => {
+  Message.find({})
+  .populate('author')
+  .exec(function(err, messages) {
     if (err) { return next(err); }
     res.render('message-board', { messages: messages });
   })
-  
-})
+});
+
+//POST for message board.  Trying to use modal.
+router.post('/message-board', [
+  (req, res, next) => {
+    console.log(req.currentUser)
+    body('title', 'Title must not be empty, or longer than 50 characters.').trim().isLength({ min: 1, max: 50 }).escape(),
+      body('comment', 'Comment must not be empty, or longer than 250 characters.').trim().isLength({ min: 1, max: 250 }).escape(),
+      next();
+  },
+  //Validated, continue
+  (req, res, next) => {
+    //Get errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      //Errors, re-render with error messages
+      res.render('message-board', { errors: errors.array() });
+    } else {
+      //No errors, create message
+      let message = new Message({
+        title: req.body.title,
+        comment: req.body.comment,
+        author: req.body.author,
+        date_posted: new Date
+      }).save(function (err, result) {
+        if (err) { return next(err); }
+        //No errors, get all messages and authors by id
+        async.parallel({
+          messageList: function(callback) {
+            Message.find({})
+            .populate('author')
+            .exec(callback)
+          },
+          authorList: function(callback) {
+            User.find({})
+            .exec(callback)
+          }
+        }, function(err, results) {
+          res.redirect('/message-board');
+        })
+      })
+    }
+  }
+])
 
 module.exports = router;

@@ -3,15 +3,37 @@ extends layout
 block content
   .container.columns.is-centered
     .column.is-half
-      .card.my-2
-        -if (currentUser)
-          -if (currentUser.status === 'Elite')
-            header.card-header
-              p.card-header-title Test Admin Message
-              -if (currentUser.admin)
-                a.card-header-icon.has-text-danger Delete
-        .card-content
-          .content Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-          -if (currentUser)
+      -if (currentUser)
+        button#newMessage.button.is-link(onClick='openMessage()') New Message
+
+        div.modal#modal
+          .modal-background(onClick='closeMessage()')
+          .modal-content.box
+            form(action='' method='POST')
+              label.label(for='title') Title:
+              .control
+                input.input(type='text' name='title', placeholder='Title' required=true)
+              label.label(for='comment') Comment: 
+              .control
+                textarea.textarea(name='comment' placeholder='Type your comment here' required=true)
+              input(type='hidden' name='author' value=currentUser._id required=true)
+              button.button.is-success Submit   
+          button#modalButton.modal-close.is-large(aria-label='close' onClick='closeMessage()')
+      -if (currentUser)
+        each item in messages
+          .card.my-2
             -if (currentUser.status === 'Elite')
-              p.time 2020-12-11
+              header.card-header
+                p.card-header-title #{item.title}
+                -if (currentUser.admin)
+                  a.card-header-icon.has-text-danger Delete
+            .card-content
+              .content #{item.comment} 
+              -if (currentUser)
+                -if (currentUser.status === 'Elite')
+                  p.time #{item.author.firstName} #{item.author.lastName} ( #{item.author.username} ) on #{item.date}
+      -else
+        each item in messages
+          .card.my-2
+            .card-content
+              .content #{item.comment}
