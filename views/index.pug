@@ -1,5 +1,13 @@
 extends layout
 
 block content
+  div.mx-5.my-5
+    
+    h1.title  Message Board!
 
-  h1.title  Message Board!
+    h1.subtitle We currently have:
+      ul
+        li #{users} total users!
+        li #{elite} elite users!
+        li #{admin} admin users!
+        li #{messages} total messages!

@@ -20,6 +20,8 @@ html(lang='en')
         li
           a(href='/log-in') Log In
       if (currentUser)
+        li 
+          a #{currentUser.username}
         li
           a(href='/log-out') Log Out
     block content

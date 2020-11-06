@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var async = require('async');
 var User = require('../models/user');
+var Message = require('../models/message');
 const { body, validationResult } = require('express-validator');
 const session = require("express-session");
 const passport = require("passport");
@@ -10,11 +12,36 @@ require('dotenv').config({ path: './main.env' });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index');
+  async.parallel({
+    countUsers: function(callback) {
+      User.find({}, 'status admin')
+      .exec(callback)
+    },
+    countMessages: function(callback) {
+      Message.find({})
+      .exec(callback)
+    }, 
+  }, function(err, results) {
+    let users = results.countUsers.length;
+    let elite=0;
+    let admin=0;
+    let messages= results.countMessages.length;
+    for (let i=0;i<results.countUsers.length;i++) {
+      if (results.countUsers[i].status === 'Elite') {
+        elite +=1;
+      }
+      if (results.countUsers[i].admin === true) {
+        admin +=1;
+      }
+    }
+    console.log(results);
+      res.render('index', { users: users, elite: elite, admin: admin, messages: messages })
+  })
 });
 
 //GET sign up form
 router.get('/sign-up', function (req, res, next) {
+  
   res.render('sign-up');
 });
 //POST sign up form
