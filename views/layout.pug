@@ -14,9 +14,12 @@ html(lang='en')
           a(href='/') Home
         li
           a(href='/message-board') Message Board
-      if (!user)
+      if (!currentUser)
         li
           a(href='/sign-up') Sign Up
         li
           a(href='/log-in') Log In
+      if (currentUser)
+        li
+          a(href='/log-out') Log Out
     block content

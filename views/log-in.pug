@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  div.field.columns.is-centered
+    div.column.is-one-quarter
+      h1.title Log In
+      br
+      form(action='', method='POST')
+        if msg
+          p.has-text-danger #{msg}
+        label.label(for='username') Username
+        div.control
+          input.input(type='text' name='username' required=true)
+        label.label(for='password') Password
+        div.control
+          input.input(type='password' name='password' required=true)
+        div.control.mt-5
+          button.button.is-success Log In

@@ -29,7 +29,8 @@ router.post('/sign-up', [
       body('password', 'Password must not be empty').isLength({ min: 1 }).escape(),
       body('passwordConfirm', 'Passwords must match').isLength({ min: 1 }).equals(req.body.password).escape(),
       body('memberPassword').optional({ checkFalsy: true }).trim().escape(),
-      body('admin').optional({ checkFalsy: true }).trim().escape()
+      body('admin').optional({ checkFalsy: true }).trim().escape(),
+      next();
 
   },
   //Process request after validation and sanitization
@@ -48,7 +49,7 @@ router.post('/sign-up', [
           //No errors, create new user
           let username;
           //Set username as email or entered username
-          if (req.body.username = '') {
+          if (req.body.username == '') {
             let name = req.body.email;
             let end = name.indexOf('@');
             username = name.slice(0, end);
@@ -57,12 +58,12 @@ router.post('/sign-up', [
           };
           //Set member status if password is correct
           let status;
-          if (req.body.memberPassword === Member_PW) {
+          if (req.body.memberPassword === process.env.Member_PW) {
             status = 'Elite';
           } else { status = 'Member' };
           //set Admin status if password is correct
           let admin = false;
-          if (req.body.admin === Admin_PW) {
+          if (req.body.admin === process.env.Admin_PW) {
             admin = true;
           };
 
@@ -90,13 +91,22 @@ router.post('/sign-up', [
 
 //GET login form
 router.get('/log-in', function (req, res, next) {
-  res.send('not yet implemented');
+  res.render('log-in', { msg: req.flash('error') });
 });
 
 //POST login form
-router.post('/log-in', function (req, res, next) {
-  res.send('not yet implemented')
-});
+router.post('/log-in', 
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/log-in",
+    failureFlash: 'Invalid username or password'
+  })
+);
+
+router.get('/log-out', (req, res) => {
+  req.logOut();
+  res.redirect('/');
+})
 
 //GET message board
 router.get('/message-board', function (req, res, next) {
