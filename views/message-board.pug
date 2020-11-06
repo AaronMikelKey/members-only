@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container.columns.is-centered
+    .column.is-half
+      .card.my-2
+        -if (currentUser)
+          -if (currentUser.status === 'Elite')
+            header.card-header
+              p.card-header-title Test Admin Message
+              -if (currentUser.admin)
+                a.card-header-icon.has-text-danger Delete
+        .card-content
+          .content Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+          -if (currentUser)
+            -if (currentUser.status === 'Elite')
+              p.time 2020-12-11

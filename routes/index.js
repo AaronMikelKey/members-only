@@ -34,7 +34,6 @@ router.get('/', function (req, res, next) {
         admin +=1;
       }
     }
-    console.log(results);
       res.render('index', { users: users, elite: elite, admin: admin, messages: messages })
   })
 });
@@ -137,7 +136,11 @@ router.get('/log-out', (req, res) => {
 
 //GET message board
 router.get('/message-board', function (req, res, next) {
-  res.send('not yet implemented');
+  Message.find({}, (err, messages) => {
+    if (err) { return next(err); }
+    res.render('message-board', { messages: messages });
+  })
+  
 })
 
 module.exports = router;
