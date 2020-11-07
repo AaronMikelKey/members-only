@@ -5,9 +5,19 @@ block content
     
     h1.title  Message Board!
 
-    h1.subtitle We currently have:
+    h2.subtitle We currently have:
       ul
         li #{users} total users!
         li #{elite} elite users!
         li #{admin} admin users!
         li #{messages} total messages!
+    br
+    br
+    .columns.is-centered
+      .column.is-half
+        p
+          |This project is designed to showcase user authentication and limitation based on "status."  Users that know the secret
+          | password can see who and when a message was posted.  Users who do not know the password can only see the message that was
+          | left.  Administrators can delete messages as well.  Passwords are encrpyted using bcryptjs, and I don't use your email
+          | address for anything.  In fact, I don't even verify emails since this is just an example app, so if you want to use
+          | example@email.com as your email address that's fine.  It only has to be a correct email format.  

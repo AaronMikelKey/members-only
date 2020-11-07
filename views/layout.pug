@@ -6,7 +6,6 @@ html(lang='en')
     title= title
     link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css')
     link(rel='stylesheet', href='../../../stylesheets/style.css')
-    script(src='../../../javascripts/modal.js')
   body
 
     div.tabs
@@ -21,6 +20,9 @@ html(lang='en')
         li
           a(href='/log-in') Log In
       if (currentUser)
+        if (currentUser.status !== 'Elite')
+          li
+            a(href='/secret-password') Enter secret password
         li 
           a #{currentUser.username}
         li

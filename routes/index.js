@@ -185,6 +185,38 @@ router.post('/message-board', [
       })
     }
   }
-])
+]);
+
+//GET for secret password if user isn't an elite member yet
+router.get('/secret-password', function(req, res, next) {
+  res.render('secret-password');
+});
+
+//POST for secret password
+router.post('/secret-password', [
+  //validate and sanitize form
+  body('password', 'Sorry, try again!').trim().equals(process.env.Member_PW).escape(),
+  body('username').escape(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    //create a new user with the same id
+    var user = new User({
+      status: 'Elite',
+      _id: req.body.username
+    });
+
+    if (!errors.isEmpty()) {
+      //Errors, re-render form
+      res.render('secret-password', {errors: errors});
+    } else {
+      //No errors, update user
+      User.findByIdAndUpdate(req.body.username, user, function(err, result) {
+        if (err) { return next(err); }
+        res.redirect('/message-board');
+      })
+    }
+  }
+]);
 
 module.exports = router;
